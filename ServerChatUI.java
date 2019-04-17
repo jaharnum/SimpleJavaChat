@@ -23,7 +23,7 @@ File name: ServerChatUI.java
 Author: Jamie Harnum #040898399
 Course: CST8221 - JAP, Lab Section 303
 Assignment: 2
-Date: April 8
+Date: April 17, 2019
 Professor: Daniel Cormier
 Purpose: Provides the Server with a UI application
 Class list: ClientChatUI, Controller
@@ -34,8 +34,7 @@ Class list: ClientChatUI, Controller
  Constructs the UI for the Server Chat
  @author Jamie Harnum
  @version 1
- @see package or class
- @since 1.8.0_171
+ @since 1.8.0_144
  */
 public class ServerChatUI extends Application implements Accessible{
 
@@ -55,7 +54,7 @@ public class ServerChatUI extends Application implements Accessible{
     }
 
     /**
-     Starts the Server Chat UI
+     Starts the Server Chat UI and sets up a message to be sent on close
      @param primaryStage - the Stage to assign the application to
      */
     @Override
@@ -74,7 +73,7 @@ public class ServerChatUI extends Application implements Accessible{
         primaryStage.setOnCloseRequest((WindowEvent e)-> {
             System.out.print("Server UI Closed!");
 
-            try {//TODO is this where we should close the connection?
+            try {
                 outputStream.writeChars(ChatProtocolConstants.DISPLACEMENT + ChatProtocolConstants.CHAT_TERMINATOR + ChatProtocolConstants.LINE_TERMINATOR);
                 outputStream.flush();
             } catch (NullPointerException n){
@@ -89,10 +88,17 @@ public class ServerChatUI extends Application implements Accessible{
 
     }
 
+    /**
+     Getter for the display TextArea
+     @return TextArea for chatDisplay
+     */
     public TextArea getDisplay(){
         return display;
     }
 
+    /**
+     Closes the socket connection and the primary stage and prints a confirmation message to the console.
+     */
     public void closeChat() {
         try {
             connection.closeConnection();
@@ -106,6 +112,9 @@ public class ServerChatUI extends Application implements Accessible{
         }
     }
 
+    /**
+     Sets up a new thread for the Client
+     */
     void runClient(){
 
         if(socket!=null) {
@@ -205,6 +214,9 @@ public class ServerChatUI extends Application implements Accessible{
             }
         }
 
+        /**
+         Passes the message text to the socket output stream and clears the message text after sending
+         */
         private void send(){
             String sendMessage = message.getText();
             display.appendText(sendMessage + ChatProtocolConstants.LINE_TERMINATOR);

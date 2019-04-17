@@ -17,20 +17,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.net.SocketException;
 
 /*
 File name: ClientChatUI.java
 Author: Jamie Harnum #040898399
 Course: CST8221 - JAP, Lab Section 303
 Assignment: 2
-Date: April 8
+Date: April 17, 2019
 Professor: Daniel Cormier
 Purpose: Provides the Client with a UI application
 Class list: ClientChatUI, Controller, BorderedTitlePane
@@ -58,17 +56,31 @@ public class ClientChatUI extends Application implements Accessible{
     TextField hostInput;
     ComboBox comboBox;
 
+    /**
+     ClientChatUI constructor with input title
+     */
     public ClientChatUI(String title){
         this.title = title;
     }
 
+    /**
+     Default constructor
+     */
     public ClientChatUI(){
         title = "Jamie's ClientChatUI";
     }
+
+    /**
+     Getter for the main chat display
+     @return TextArea display
+     */
     public TextArea getDisplay(){
         return display;
     }
 
+    /**
+     Closes the socket connection associated with this UI and the primary stage
+     */
     public void closeChat(){
         try {
             connection.closeConnection();
@@ -78,6 +90,7 @@ public class ClientChatUI extends Application implements Accessible{
             e.printStackTrace();
         }
     }
+
     /**
      Starts the Client Chat UI
      @param primaryStage - the Stage to assign the application to
@@ -99,6 +112,9 @@ public class ClientChatUI extends Application implements Accessible{
         this.primaryStage.show();
     }
 
+    /**
+     If stop is called it prints the chat terminator to the output stream
+     */
     public void stop(){
         if(!socket.isClosed()){
             try {
@@ -109,6 +125,9 @@ public class ClientChatUI extends Application implements Accessible{
         }
     }
 
+    /**
+     Enables the connect button and disables the send button
+     */
     private void enableConnectButton(){
         connectButton.setDisable(false);
         connectButton.setStyle("-fx-base: red");
@@ -239,7 +258,6 @@ public class ClientChatUI extends Application implements Accessible{
                     String portVal = comboBox.getValue().toString();
                     port = Integer.parseInt(portVal);
                 } catch (NullPointerException e){ //if there's nothing in the combo box, go with default port
-                    e.printStackTrace();
                     port = 65535;
                 }
 
@@ -264,6 +282,11 @@ public class ClientChatUI extends Application implements Accessible{
             }
         }
 
+        /**
+         Creates a new socket to connect to the Server and sets up the connection
+         @param host IP address to connect to
+         @return port Port to connect on
+         */
         boolean connect(String host, int port){
 
             try {
@@ -290,6 +313,10 @@ public class ClientChatUI extends Application implements Accessible{
             }
         }
 
+        /**
+         Sends messages to the outputStream, clears message text field after sending,
+         and checks if the connection is still working - if not, it enables the connect button again.
+         */
         private void send(){
             String sendMessage = message.getText();
             display.appendText(sendMessage + ChatProtocolConstants.LINE_TERMINATOR);
@@ -302,6 +329,10 @@ public class ClientChatUI extends Application implements Accessible{
                 display.appendText(e.getMessage() + ChatProtocolConstants.LINE_TERMINATOR);
             }
 
+            if(!socket.isConnected()){
+                enableConnectButton();
+                display.appendText("Friend has disconnected." + ChatProtocolConstants.LINE_TERMINATOR);
+            }
             //clear the text after sending
             message.setText("");
             message.requestFocus();

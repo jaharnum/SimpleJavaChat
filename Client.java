@@ -19,6 +19,8 @@ Purpose: Currently: Launches the Client UI
  */
 public class Client {
 
+    /**
+     * Launches the UI*/
     public static void main(String []args){
         Application.launch(ClientChatUI.class);
     }

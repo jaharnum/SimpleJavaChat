@@ -1,3 +1,7 @@
+/**
+ Identifies constants for our chat protocols
+ @author Prof Sv. Ranev
+ */
 public class ChatProtocolConstants {
 
     static final String CHAT_TERMINATOR = "bye";
